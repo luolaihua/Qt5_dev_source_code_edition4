@@ -1,0 +1,32 @@
+QSqlDatabase sqldb = QSqlDatabase::addDatabase("QMYSQL");
+sqldb.setHostName("localhost");
+sqldb.setDatabaseName("emarket");						//数据库名称
+sqldb.setUserName("root");      							//数据库用户名
+sqldb.setPassword("123456");    						//登录密码
+if (!sqldb.open()) {
+    QMessageBox::critical(0, QObject::tr("后台数据库连接失败"), "无法创建连接！请检查排除故障后重启程序。", QMessageBox::Cancel);
+    return false;
+}
+//向数据库中插入照片
+QSqlQuery query(sqldb);
+QString photoPath = "D:\\Qt\\imgproc\\21.jpg";			//照片容量不能大于60KB
+QFile photoFile(photoPath);
+if (photoFile.exists())
+{
+    //存入数据库
+    QByteArray picdata;
+    photoFile.open(QIODevice::ReadOnly);
+    picdata = photoFile.readAll();
+    photoFile.close();
+    QVariant var(picdata);
+    QString sqlstr = "update commodity set Picture=? where CommodityID=6";
+    query.prepare(sqlstr);
+    query.addBindValue(var);
+    if(!query.exec())
+    {
+        QMessageBox::information(0, QObject::tr("提示"), "照片写入失败");
+    } else{
+        QMessageBox::information(0, QObject::tr("提示"), "照片已写入数据库");
+    }
+}
+sqldb.close();

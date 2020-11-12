@@ -1,0 +1,27 @@
+void MainWindow::ctImgHoughCircles()
+{
+    Mat ctGrayImg = myCtGrayImg.clone();		//获取灰度图
+    Mat ctColorImg;
+    cvtColor(ctGrayImg, ctColorImg, CV_GRAY2BGR);
+    GaussianBlur(ctGrayImg, ctGrayImg, Size(9, 9), 2, 2);//先对图像做高斯平滑处理
+    vector<Vec3f> h_circles;					//用向量数组存储病灶区圆圈
+    HoughCircles(ctGrayImg, h_circles, CV_HOUGH_GRADIENT, 2, ctGrayImg.rows/8, 200, 100);											//(a)
+    int processValue = 45;
+    ui->progressBar->setValue(processValue);
+    QTime time;
+    time.start();
+    while (time.elapsed() < 2000) { QCoreApplication::processEvents(); }
+    for(size_t i = 0; i < h_circles.size(); i++)
+    {
+        Point center(cvRound(h_circles[i][0]), cvRound(h_circles[i][1]));
+        int h_radius = cvRound(h_circles[i][2]);
+        circle(ctColorImg, center, h_radius, Scalar(238, 0, 238), 3, 8, 0);
+												//以粉色圆圈圈出CT相片上的病灶区
+        circle(ctColorImg, center, 3, Scalar(238, 0, 0), -1, 8, 0);
+												//以鲜红圆点标出病灶区的中心所在之处
+        processValue += 1;
+        ui->progressBar->setValue(processValue);
+    }
+    myCtImg = ctColorImg;
+    myCtQImage = QImage((const unsigned char*)(myCtImg.data), myCtImg.cols, myCtImg.rows, QImage::Format_RGB888);
+}

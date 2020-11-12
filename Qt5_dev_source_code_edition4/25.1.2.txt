@@ -1,0 +1,41 @@
+/* import部分 */
+import QtQuick 2.7
+import QtQuick.Controls 1.5					//导入Qt Quick Controls 1.5库
+import QtQuick.Dialogs 1.2					//导入Qt Quick对话框库
+/* 对象声明 */
+ApplicationWindow {							//主应用窗口：ApplicationWindow
+    visible: true
+    width: 640
+    height: 480
+    title: qsTr("Hello World")
+
+    menuBar: MenuBar {						//组件类属性：menuBar
+        Menu {								//菜单
+            title: qsTr("File")
+            MenuItem {						//菜单项
+                text: qsTr("&Open")
+                onTriggered: console.log("Open action triggered");
+            }
+            MenuItem {						//菜单项
+                text: qsTr("Exit")
+                onTriggered: Qt.quit();
+            }
+        }
+    }
+
+    MainForm {								//主窗体：MainForm
+        anchors.fill: parent
+        button1.onClicked: messageDialog.show(qsTr("Button 1 pressed"))
+        button2.onClicked: messageDialog.show(qsTr("Button 2 pressed"))
+    }
+
+    MessageDialog {							//其他组件：MessageDialog
+        id: messageDialog
+        title: qsTr("May I have your attention, please?")
+
+        function show(caption) {
+            messageDialog.text = caption;
+            messageDialog.open();
+        }
+    }
+}

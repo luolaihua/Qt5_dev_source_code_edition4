@@ -1,0 +1,100 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QFileDialog>								//打开文件对话框模块
+#include <QBuffer>									//内存模块
+#include <vector>            							//包含向量类动态数组功能
+#include "opencv2/opencv.hpp"						//OpenCV库文件包含
+#include "opencv2/highgui/highgui.hpp"				//OpenCV的高层GUI和媒体I/O
+#include "opencv2/imgproc/imgproc.hpp"				//OpenCV图像处理
+#include <QSqlDatabase>								//数据库访问
+#include <QSqlTableModel>							//数据库表模型
+#include <QSqlQuery>								//数据库查询模块
+#include <QTimer>									//计时器模块
+
+using namespace cv;          						//OpenCV命名空间
+using namespace std;         						//使用vector必须声明名称空间
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);		//主窗体构造方法
+    ~MainWindow();
+    void initMainWindow();							//初始化主窗体
+    void ctImgRead();								//读取CT相片
+    void ctImgProc();								//CT相片处理
+    void ctImgSave();								//结果相片（标示病灶）保存
+    void ctImgShow();								//CT相片显示
+    void ctImgHoughCircles();						//用霍夫圆算法处理CT相片
+    void onTableSelectChange(int row);				//改变数据网格选项联动表单
+    void showUserPhoto();							//加载显示患者照片
+
+private slots:
+    void on_startPushButton_clicked();				//“开始诊断”按钮单击槽函数
+
+    void on_basicTableView_clicked(const QModelIndex &index);
+													//数据网格变更选项槽函数
+    void on_tabWidget_tabBarClicked(int index);		//表单切换选项卡槽函数
+
+    void onTimeOut();								//定时器事件槽函数
+
+private:
+    Ui::MainWindow *ui;								//图形界面元素的引用句柄
+    Mat myCtImg;                    	//缓存CT相片（供程序中的方法随时引用）
+    Mat myCtGrayImg;                	//缓存CT灰度图（供程序算法处理用）
+    QImage myCtQImage;             	//保存CT相片（转为文件存盘存档）
+    QSqlTableModel *model;          	//访问数据库视图信息的模型
+    QSqlTableModel *model_d; 		//访问数据库附加详细信息（病历、照片）视图的模型
+    QTimer *myTimer;                	//获取当前系统时间（精确到秒）
+};
+
+/**连接MySQL数据库的静态方法*/
+static bool createMySqlConn()
+{
+    QSqlDatabase sqldb = QSqlDatabase::addDatabase("QMYSQL");	//添加数据库
+    sqldb.setHostName("localhost");					//主机名
+    sqldb.setDatabaseName("patient");				//数据库名称
+    sqldb.setUserName("root");						//数据库用户名
+    sqldb.setPassword("123456");					//登录密码
+    if (!sqldb.open()) {
+        QMessageBox::critical(0, QObject::tr("后台数据库连接失败"), "无法创建连接！请检查排除故障后重启程序。", QMessageBox::Cancel);
+        return false;
+    }
+    QMessageBox::information(0, QObject::tr("后台数据库已启动、正在运行……"), "数据库连接成功！即将启动应用程序。");
+    //向数据库中插入照片
+    /*
+    QSqlQuery query(sqldb);							//创建SQL查询
+    QString photoPath = "D:\\Qt\\test\\赵国庆.jpg";	//照片路径
+    QFile photoFile(photoPath);						//照片文件对象
+    if (photoFile.exists())							//如果存在照片
+    {
+        //存入数据库
+        QByteArray picdata;							//字节数组存储照片数据
+        photoFile.open(QIODevice::ReadOnly);			//以只读方式打开照片文件
+        picdata = photoFile.readAll();				//照片数据读入字节数组
+        photoFile.close();
+        QVariant var(picdata);						//照片数据封装入变量
+        QString sqlstr = "update user_profile set picture=? where name='赵国庆'";
+        query.prepare(sqlstr);						//准备插入照片的SQL语句
+        query.addBindValue(var);						//填入照片数据参数
+        if(!query.exec())							//执行插入操作
+        {
+            QmessageBox::information(0, Qobject::tr("提示"), "照片写入失败");
+        } else{
+            QmessageBox::information(0, Qobject::tr("提示"), "照片已写入数据库");
+        }
+    }
+    */
+    sqldb.close();
+    return true;
+}
+
+#endif // MAINWINDOW_H

@@ -1,0 +1,52 @@
+#include "logindialog.h"
+#include "ui_logindialog.h"
+
+LoginDialog::LoginDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::LoginDialog)
+{
+    ui->setupUi(this);
+    setFixedSize(400, 300);						//登录对话框固定大小
+    ui->pwdLineEdit->setFocus();				//口令框置焦点
+}
+
+LoginDialog::~LoginDialog()
+{
+    delete ui;
+}
+
+void LoginDialog::on_loginPushButton_clicked()
+{
+    if (!ui->pwdLineEdit->text().isEmpty())
+    {
+        QSqlQuery query;
+        query.exec("select PassWord from member where MemberID='" + ui-> adminLineEdit->text() + "'");						//从数据库中查询出口令密码字段
+        query.next();
+        QString pwdMd5 = strToMd5(ui->pwdLineEdit->text());	//(a)
+        if (query.value(0).toString() == pwdMd5)
+        {
+            QDialog::accept();					//验证通过
+        } else {
+            QMessageBox::warning(this, tr("口令错误"), tr("请输入正确的口令！"), QMessageBox::Ok);
+            ui->pwdLineEdit->clear();
+            ui->pwdLineEdit->setFocus();
+        }
+    } else {
+        ui->pwdLineEdit->setFocus();
+    }
+}
+
+void LoginDialog::on_exitPushButton_clicked()
+{
+    QDialog::reject();							//退出登录框
+}
+
+QString LoginDialog::strToMd5(QString str)
+{
+    QString strMd5;
+    QByteArray qba;
+    qba = QCryptographicHash::hash(str.toLatin1(), QCryptographicHash::Md5);
+												//(b)
+    strMd5.append(qba.toHex());
+    return strMd5;
+}

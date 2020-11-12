@@ -1,0 +1,26 @@
+#include "mainwindow.h"
+#include "logindialog.h"
+#include <QApplication>
+#include <QProcess>								//Qt进程模块
+
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    if(!createMySqlConn())						//(a)
+    {
+        //若初次尝试连接不成功,就用代码方式启动MySQL服务进程
+        QProcess process;
+        process.start("C:/Program Files/MySQL/MySQL Server 5.6/bin/mysqld. exe");
+        //第二次尝试连接
+        if(!createMySqlConn()) return 1;
+    }
+    LoginDialog logindlg;						//登录对话框类
+    if (logindlg.exec() == QDialog::Accepted)	//(b)
+    {
+        MainWindow w;
+        w.show();								//启动主窗体
+        return a.exec();
+    } else {
+        return 0;
+    }
+}

@@ -1,0 +1,41 @@
+void MainWindow::recvAndProcessChatMsg()
+{
+    while (myUdpSocket->hasPendingDatagrams())				//(a)
+    {
+        QByteArray qba;
+        qba.resize(myUdpSocket->pendingDatagramSize());		//(b)
+        myUdpSocket->readDatagram(qba.data(), qba.size());
+        QDataStream read(&qba, QIODevice::ReadOnly);
+        int msgType;
+        read >> msgType;										//(c)
+        QString name, hostip, chatmsg, rname, fname;
+        QString curtime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh: mm:ss");
+        switch (msgType)
+        {
+        case ChatMsg: {
+            read >> name >> hostip >> chatmsg;				//(d)
+            ui->chatTextBrowser->setTextColor(Qt::darkGreen);
+            ui->chatTextBrowser->setCurrentFont(QFont("Times New Roman", 14));
+            ui->chatTextBrowser->append("¡¾" + name + "¡¿" + curtime);
+            ui->chatTextBrowser->append(chatmsg);
+            break;
+        }
+        case OnLine:											//(e)
+            read >> name >> hostip;
+            onLine(name, curtime);
+            break;
+        case OffLine:										//(f)
+            read >> name;
+            offLine(name, curtime);
+            break;
+        case SfileName:
+            read >> name >> hostip >> rname >> fname;
+            recvFileName(name, hostip, rname, fname);
+            break;
+        case RefFile:
+            read >> name >> hostip >> rname;
+            if(myname == rname) myfsrv->cntRefused();
+            break;
+        }
+    }
+}

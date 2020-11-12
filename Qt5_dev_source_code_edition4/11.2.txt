@@ -1,0 +1,57 @@
+void KeyEvent::keyPressEvent(QKeyEvent *event)
+{
+    if(event->modifiers()==Qt::ControlModifier)			//(a)
+    {
+        if(event->key()==Qt::Key_Left)					//(b)
+        {
+            startX=(startX-1<0)?startX:startX-1;
+        }
+        if(event->key()==Qt::Key_Right)					//(c)
+        {
+            startX=(startX+1+image.width()>width)?startX:startX+1;
+        }
+        if(event->key()==Qt::Key_Up)						//(d)
+        {
+            startY=(startY-1<0)?startY:startY-1;
+        }
+        if(event->key()==Qt::Key_Down)					//(e)
+        {
+            startY=(startY+1+image.height()>height)?startY:startY+1;
+        }
+    }
+    else									//对Ctrl键没有按下的处理
+    {
+		/* 首先调节图标左上顶点的位置至网格的顶点上 */
+        startX=startX-startX%step;
+        startY=startY-startY%step;
+        if(event->key()==Qt::Key_Left)					//(f)
+        {
+            startX=(startX-step<0)?startX:startX-step;
+        }
+        if(event->key()==Qt::Key_Right)					//(g)
+        {
+            startX=(startX+step+image.width()>width)?startX:startX+step;
+        }
+        if(event->key()==Qt::Key_Up)						//(h)
+        {
+            startY=(startY-step<0)?startY:startY-step;
+        }
+        if(event->key()==Qt::Key_Down)					//(i)
+        {
+            startY=(startY+step+image.height()>height)?
+            startY:startY+step;
+        }
+        if(event->key()==Qt::Key_Home)					//(j)
+        {
+            startX=0;
+            startY=0;
+        }
+        if(event->key()==Qt::Key_End)					//(k)
+        {
+            startX=width-image.width();
+            startY=height-image.height();
+        }
+    }
+    drawPix();		//根据调整后的图标位置重新在pix中绘制图像
+    update();		//触发界面重画
+}

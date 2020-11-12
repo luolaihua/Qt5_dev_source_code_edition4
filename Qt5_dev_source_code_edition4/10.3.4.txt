@@ -1,0 +1,38 @@
+void TcpClient::slotEnter()
+{
+    if(!status)											//(a)
+    {
+		/* 完成输入合法性检验 */
+        QString ip = serverIPLineEdit->text();
+        if(!serverIP->setAddress(ip))					//(b)
+        {
+            QMessageBox::information(this,tr("error"),tr("server ip address 
+error!"));
+            return;
+        }
+        if(userNameLineEdit->text()=="")
+        {
+            QMessageBox::information(this,tr("error"),tr("User name error!"));
+            return;
+        }
+        userName=userNameLineEdit->text();
+		/* 创建了一个QTcpSocket类对象，并将信号/槽连接起来 */
+        tcpSocket = new QTcpSocket(this);
+        connect(tcpSocket,SIGNAL(connected()),this,SLOT (slotConnected()));
+        connect(tcpSocket,SIGNAL(disconnected()),this,SLOT (slotDisconnected()));
+        connect(tcpSocket,SIGNAL(readyRead()),this,SLOT (dataReceived()));
+        tcpSocket->connectToHost(*serverIP,port);		//(c)
+        status=true;
+    }
+    else
+    {
+        int length=0;
+        QString msg=userName+tr(":Leave Chat Room");	//(d)
+        if((length=tcpSocket->write(msg.toLatin1(),msg.length()))!=msg.length())															//(e)
+        {
+            return;
+        }
+        tcpSocket->disconnectFromHost();					//(f)
+        status=false;								    //将status状态复位
+    }
+}

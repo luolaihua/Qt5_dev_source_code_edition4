@@ -1,0 +1,76 @@
+#include "htmlhandler.h"							//包含头文件
+#include <QtGui/QTextDocument>
+#include <QtCore/QFileInfo>
+HtmlHandler::HtmlHandler()							//初始化
+    : m_target(0)
+    , m_doc(0)
+    , m_cursorPosition(-1)
+    , m_selectionStart(0)
+    , m_selectionEnd(0)
+{}
+void HtmlHandler::setTarget(QQuickItem *target)		
+//设置要显示文档的目标元素
+{
+    m_doc = 0;
+    m_target = target;
+    if (!m_target)
+        return;
+    QVariant doc = m_target->property("textDocument");
+    if (doc.canConvert<QQuickTextDocument*>()) {
+        QQuickTextDocument *qqdoc = doc.value<QQuickTextDocument*>();
+        if (qqdoc)
+            m_doc = qqdoc->textDocument();
+    }
+    emit targetChanged();							//发出目标元素改变信号
+}
+void HtmlHandler::setFileUrl(const QUrl &arg)	//设置文件路径
+{
+    if (m_fileUrl != arg) {						//若与原来路径不同，则赋值
+        m_fileUrl = arg;
+        QString fileName = QQmlFile::urlToLocalFileOrQrc(arg);
+        if (QFile::exists(fileName)) {			//若文件存在
+            QFile file(fileName);
+            if (file.open(QFile::ReadOnly)) {	//以只读方式打开文件
+                QByteArray data = file.readAll();	//读取文件
+                QTextCodec *codec = QTextCodec::codecForHtml(data);																//以html格式编码
+                setText(codec->toUnicode(data));	//转换为Unicode字符
+                if (m_doc)
+                    m_doc->setModified(false);
+                if (fileName.isEmpty())
+//若文件名为空，则取默认untitled.txt
+                    m_htmlTitle = QStringLiteral("untitled.txt");
+                else				  				//若不为空，则获取文件名作为文档标题
+                    m_htmlTitle = QFileInfo(fileName).fileName();
+                emit textChanged();				//发出文本内容改变信号
+                emit htmlTitleChanged();			//发出文档标题改变信号
+            }
+        }	
+        emit fileUrlChanged();					//发出文件路径改变信号
+    }
+}
+QString HtmlHandler::htmlTitle() const			//返回html文档的标题
+{
+    return m_htmlTitle;
+}
+void HtmlHandler::setHtmlTitle(QString arg)	//设置文档标题
+{
+    if (m_htmlTitle != arg) {
+        m_htmlTitle = arg;
+        emit htmlTitleChanged();					//发出文档标题改变信号
+    }
+}
+void HtmlHandler::setText(const QString &arg)	//设置文本内容
+{
+    if (m_text != arg) {
+        m_text = arg;
+        emit textChanged();						//发出文本内容改变信号
+    }
+}
+QUrl HtmlHandler::fileUrl() const				//返回文件路径
+{
+    return m_fileUrl;
+}
+QString HtmlHandler::text() const			//返回文本内容
+{
+    return m_text;
+}

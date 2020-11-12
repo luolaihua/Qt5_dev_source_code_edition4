@@ -1,0 +1,33 @@
+void FileInfo::slotGet()
+{
+    QString file = fileNameLineEdit->text();
+    QFileInfo info(file);					//根据输入参数创建一个QFileInfo对象
+    qint64 size = info.size();				//获得QFileInfo对象的大小
+    QDateTime created = info.created();
+											//获得QFileInfo对象的创建时间
+    QDateTime lastModified = info.lastModified();
+											//获得QFileInfo对象的最后修改时间
+    QDateTime lastRead = info.lastRead();
+											//获得QFileInfo对象的最后访问时间
+    /* 判断QFileInfo对象的文件类型属性 */
+    bool isDir = info.isDir();				//是否为目录
+    bool isFile = info.isFile();			//是否为文件
+    bool isSymLink = info.isSymLink();		//(a)
+    bool isHidden = info.isHidden();		//判断QFileInfo对象的隐藏属性
+    bool isReadable = info.isReadable();	//判断QFileInfo对象的读属性
+    bool isWritable = info.isWritable();	//判断QFileInfo对象的写属性
+    bool isExecutable = info.isExecutable();
+			//判断QFileInfo对象的可执行属性
+    /* 根据上面得到的结果更新界面显示 */
+    sizeLineEdit->setText(QString::number(size));
+    createTimeLineEdit->setText(created.toString());
+    lastModifiedLineEdit->setText(lastModified.toString());
+    lastReadLineEdit->setText(lastRead.toString());
+    isDirCheckBox->setCheckState(isDir?Qt::Checked:Qt::Unchecked);
+    isFileCheckBox->setCheckState(isFile?Qt::Checked:Qt::Unchecked);
+    isSymLinkCheckBox->setCheckState(isSymLink?Qt::Checked:Qt::Unchecked);
+    isHiddenCheckBox->setCheckState(isHidden?Qt::Checked:Qt::Unchecked);
+    isReadableCheckBox->setCheckState(isReadable?Qt::Checked:Qt::Unchecked);
+    isWritableCheckBox->setCheckState(isWritable?Qt::Checked:Qt::Unchecked);
+    isExecutableCheckBox->setCheckState(isExecutable?Qt::Checked:Qt::Unchecked);
+}

@@ -1,0 +1,27 @@
+FileDialog {
+    id: htmlDlg									//对话框标识
+    title: "打开网页"								//对话框标题
+    nameFilters: ["网页 (*.htm *.html *.mht)"]	
+//限定只可选网页格式的文件
+    onAccepted: {
+        htmldoc.fileUrl = fileUrl;				//获取网页路径
+        var filepath = new String(fileUrl);
+        mainStatusBar.text = filepath.slice(8);	
+//状态栏同步显示当前打开的网页路径
+        centralArea.current = htmlArea			//设htmlArea为当前主显示区
+	   /* 控制各显示区元素的显隐状态 */
+        textArea.visible = false;
+        imageArea.visible = false;
+        htmlArea.visible = true;
+        main.title = htmldoc.htmlTitle + " - 多功能文档查看器"	 
+//设置主窗口标题
+        /* 设置系统各功能项的可用性 */
+        copyAction.enabled = false
+        cutAction.enabled = false
+        pasteAction.enabled = false
+        imgRotaleftAction.enabled = false
+        imgRotarightAction.enabled = false
+        imgZoominAction.enabled = false
+        imgZoomoutAction.enabled = false
+    }
+}

@@ -1,0 +1,23 @@
+void FileSrvDlg::refreshProgress(qint64 bynum)
+{
+    qApp->processEvents();						//(a)
+    mySendBytes += (int)bynum;
+    if(myBytesTobeSend > 0)
+    {
+        myOutputBlock=myLocPathFile->read(qMin(myBytesTobeSend, myPayloadSize));
+        myBytesTobeSend -= (int)mySrvSocket->write(myOutputBlock);
+        myOutputBlock.resize(0);
+    } else {
+        myLocPathFile->close();
+    }
+    ui->sendProgressBar->setMaximum(myTotalBytes);
+    ui->sendProgressBar->setValue(mySendBytes);
+    ui->sfileSizeLineEdit->setText(tr("%1").arg(myTotalBytes/(1024 * 1024)) + " MB");													//填写文件总大小栏
+    ui->sendSizeLineEdit->setText(tr("%1").arg(mySendBytes/(1024*1024))+"MB");													//填写已发送栏
+    if(mySendBytes == myTotalBytes)
+    {
+        myLocPathFile->close();
+        myTcpSrv->close();
+        QMessageBox::information(0, QObject::tr("完毕"), "文件传输完成！");
+    }
+}

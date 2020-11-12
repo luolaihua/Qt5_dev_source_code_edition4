@@ -1,0 +1,35 @@
+void MainWindow::on_closeAction_triggered()
+{
+	//对应“窗口”→“关闭”菜单项
+    ui->mdiArea->closeActiveSubWindow();		//关闭窗口
+}
+
+void MainWindow::on_closeAllAction_triggered()
+{
+	//对应“窗口”→“关闭所有”菜单项
+    ui->mdiArea->closeAllSubWindows();			//关闭所有窗口
+}
+
+void MainWindow::on_tileAction_triggered()
+{
+	//对应“窗口”→“平铺”菜单项
+    ui->mdiArea->tileSubWindows();				//平铺所有窗口
+}
+
+void MainWindow::on_cascadeAction_triggered()
+{
+	//对应“窗口”→“层叠”菜单项
+    ui->mdiArea->cascadeSubWindows();			//层叠所有窗口
+}
+
+void MainWindow::on_nextAction_triggered()
+{
+	//对应“窗口”→“下一个”菜单项
+    ui->mdiArea->activateNextSubWindow();		//焦点移至下一个窗口
+}
+
+void MainWindow::on_previousAction_triggered()
+{
+	//对应“窗口”→“前一个”菜单项
+    ui->mdiArea->activatePreviousSubWindow();	//焦点移至前一个窗口
+}

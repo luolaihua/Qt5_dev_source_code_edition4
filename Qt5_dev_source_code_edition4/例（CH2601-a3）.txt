@@ -1,0 +1,56 @@
+import QtQuick 2.7
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.0
+import QtQuick.Dialogs 1.2				//导入QtQuick对话框库
+import QtQuick.Extras 1.4				//导入QtQuick扩展库
+
+ApplicationWindow {						//主应用窗口
+    visible: true
+    width: 400
+    height: 200
+    title: qsTr("翻选框")
+
+    RowLayout {							//该行提供日期选择功能
+        anchors.centerIn: parent
+        Label {
+            text: "日期："
+        }
+        TextField {						//文本框用于显示用户选择的日期
+            id: date
+        }
+        Button {
+            id: btnSelect
+            text: qsTr("选择...")
+            onClicked: dateDialog.open()	//打开日期选择对话框
+        }
+    }
+
+
+    Dialog {								//日期选择对话框
+        id: dateDialog
+        title: "选择日期"
+        width: 275
+        height: 300
+        standardButtons: StandardButton.Save | StandardButton.Cancel
+        onAccepted: {
+            date.text = year.model[year.currentIndex] + "年" + month.model [month.currentIndex] + day.model[day.currentIndex] + "日"
+        }									//(a)
+
+        Tumbler {						//(b)
+            id: calendar
+            anchors.centerIn: parent
+            TumblerColumn {							//翻选月份
+                id: month
+                model: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            }
+            TumblerColumn {							//翻选日
+                id: day
+                model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+            }
+            TumblerColumn {							//翻选年
+                id: year
+                model: ["2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017"]
+            }
+        }
+    }
+}

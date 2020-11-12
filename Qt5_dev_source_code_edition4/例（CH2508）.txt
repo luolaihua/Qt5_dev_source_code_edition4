@@ -1,0 +1,45 @@
+import QtQuick 2.5
+import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.2
+import QtQuick.Extras 1.4						//导入扩展库
+
+Item {
+    width: 320
+    height: 270
+
+    property alias button1: button1
+    property alias button2: button2
+    property alias thermometer: thermometer		//温度计控件的属性别名
+
+    ColumnLayout {								//纵向布局
+        anchors.centerIn: parent
+
+        Gauge {									//(a)
+            id: thermometer
+            minimumValue: 0
+            value: 30								//初始温度为30℃
+            maximumValue: 100
+            anchors.centerIn: parent
+        }
+
+        Label {										//(b)
+            height: 15
+        }
+
+        Label {
+            height: 15
+        }
+
+        RowLayout {									//横向布局
+            Button {									//“升温”按钮
+                id: button1
+                text: qsTr("升温")
+            }
+
+            Button {									//“降温”按钮
+                id: button2
+                text: qsTr("降温")
+            }
+        }
+    }
+}

@@ -1,0 +1,30 @@
+void MainWindow::imgProc()
+{
+    int METHOD = CV_TM_CCOEFF;			//(a)
+    Mat imgSrc = myImg;            		//将被显示的原图
+    QString imgPath = "fish.jpg";      	//待匹配的子图（为原图上截取下的一部分）
+    Mat imgTmp = imread(imgPath.toLatin1().data());  	//读取图像数据
+    cvtColor(imgTmp, imgTmp, COLOR_BGR2RGB);            	//图像格式转换
+    Mat imgRes;
+    Mat imgDisplay;
+    imgSrc.copyTo(imgDisplay);
+    int rescols = imgSrc.cols - imgTmp.cols + 1;
+    int resrows = imgSrc.rows - imgTmp.rows + 1;
+    imgRes.create(rescols, resrows, CV_32FC1);          	//创建输出结果的矩阵
+    matchTemplate(imgSrc, imgTmp, imgRes, METHOD);   	//进行匹配
+    normalize(imgRes, imgRes, 0, 1, NORM_MINMAX, -1, Mat());	//进行标准化
+    double minVal;
+    double maxVal;
+    Point minLoc;
+    Point maxLoc;
+    Point matchLoc;
+    minMaxLoc(imgRes, & minVal, & maxVal, & minLoc, & maxLoc, Mat());
+										//通过函数 minMaxLoc 定位最匹配的位置
+    //对于方法 SQDIFF 和 SQDIFF_NORMED, 数值越小匹配结果越好;而对于其他方法,数值越大,匹配结果越好
+    if (METHOD == CV_TM_SQDIFF || METHOD == CV_TM_SQDIFF_NORMED) matchLoc = minLoc;
+    else matchLoc = maxLoc;
+    rectangle(imgDisplay, matchLoc, Point(matchLoc.x + imgTmp.cols, matchLoc.y + imgTmp.rows), Scalar::all(0), 2, 8, 0);
+    rectangle(imgRes, matchLoc, Point(matchLoc.x + imgTmp.cols, matchLoc.y + imgTmp.rows), Scalar::all(0), 2, 8, 0);
+    myQImg = QImage((const unsigned char*)(imgDisplay.data), imgDisplay.cols, imgDisplay.rows, QImage::Format_RGB888);
+    imgShow();							//显示图片
+}

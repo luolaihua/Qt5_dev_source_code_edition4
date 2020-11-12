@@ -1,0 +1,86 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    //初始化加载功能
+	...
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::initMainWindow()
+{
+	//初始化窗体中要显示的CT相片及系统当前日期时间
+	...
+}
+
+void MainWindow::onTableSelectChange(int row)
+{
+	//当用户选择网格中的患者记录时，实现表单信息的联动功能
+	...
+}
+
+void MainWindow::showUserPhoto()
+{
+	//查找和显示当前患者的对应照片
+	...
+}
+
+void MainWindow::onTimeOut()
+{
+	//每秒触发一次时间显示更新
+	...
+}
+
+void MainWindow::ctImgRead()
+{
+	//读入和显示CT相片
+	...
+}
+
+void MainWindow::ctImgProc()
+{
+	//CT相片处理功能
+	...
+}
+
+void MainWindow::ctImgSave()
+{
+	//处理后的CT相片保存
+	...
+}
+
+void MainWindow::ctImgShow()
+{
+	//在界面上显示CT相片
+	...
+}
+
+void MainWindow::ctImgHoughCircles()
+{
+	//执行霍夫圆算法对CT相片进行处理功能
+	...
+}
+
+void MainWindow::on_startPushButton_clicked()
+{
+	//“开始诊断”按钮的事件方法
+	...
+}
+
+void MainWindow::on_basicTableView_clicked(const QModelIndex &index)
+{
+    onTableSelectChange(1);						//数据网格选择的行变更时执行方法
+}
+
+void MainWindow::on_tabWidget_tabBarClicked(int index)
+{
+	//病历内容的填写和联动显示
+	...
+}

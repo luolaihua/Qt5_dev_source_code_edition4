@@ -1,0 +1,32 @@
+void MainWindow::on_newPutinStorePushButton_clicked()
+{
+    QSqlQuery query;
+    query.exec(QString("select CategoryID from category where Name='%1'"). arg(ui->newCategoryComboBox->currentText()));			//(a)
+    query.next();
+    int categoryid = query.value(0).toInt();		//将要入库的商品类别
+    QString name = ui->newNameLineEdit->text();		//商品名称
+    float inputprice = ui->newInputPriceLineEdit->text().toFloat();	//进价
+    float outputprice = ui->newOutputPriceLineEdit->text().toFloat();	//售价
+    int count = ui->newCountSpinBox->value();		//入库量
+    query.exec(QString("insert into commodity(CategoryID, Name, Picture, InputPrice, 
+OutputPrice, Amount) values(%1, '%2', NULL, %3, %4, %5)"). arg(categoryid).arg(name). 
+arg(inputprice).arg(outputprice).arg(count));			//(b)
+    //插入照片
+    QByteArray picdata;
+    QBuffer buffer(&picdata);
+    buffer.open(QIODevice::WriteOnly);
+    myPicImg.save(&buffer, "JPG");					//(c)
+    QVariant var(picdata);
+    QString sqlstr = "update commodity set Picture=? where Name='" + name + "'";
+    query.prepare(sqlstr);
+    query.addBindValue(var);						//(d)
+    if(!query.exec())
+    {
+        QMessageBox::information(0, QObject::tr("提示"), "照片写入失败");
+    }
+    //刷新网格信息
+    commodity_model->setTable("commodity_inf");
+    commodity_model->select();
+    ui->commodityTableView->setModel(commodity_model);
+													//刷新数据网格（“新品入库”页）
+}

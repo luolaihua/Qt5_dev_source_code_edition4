@@ -1,0 +1,54 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    myword = new QAxObject("Word.Application");		//创建Word应用程序对象
+    mydocs = myword->querySubObject("Documents");			//获取文档集
+    mydocs->dynamicCall("Open(const QString&)", "d:\\Qt\\office\\1977—2017历年全国高考人数和录取率统计.docx");									//打开文档
+    document = myword->querySubObject("ActiveDocument");	//当前活动文档
+    mytable = document->querySubObject("Tables(int)", 1);	//第一张表
+    int rows = mytable->querySubObject("Rows")->dynamicCall("Count").toInt();
+															//获取表格总行数
+    for(int i = 2; i < rows + 1; i++)
+    {
+        QAxObject *headcol = mytable->querySubObject("Cell(int,int)", i, 0);
+													//读取第一列年份信息
+        if (headcol == NULL) continue;
+        QString yearStr = headcol->querySubObject("Range")->property("Text"). toString();
+        ui->yearComboBox->addItem(yearStr);			//载入界面上的年份列表
+        if (i == rows) ui->yearComboBox->setCurrentText(yearStr);
+													//默认显示最近年份（2017）
+    }
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_queryPushButton_clicked()
+{
+    int rows = mytable->querySubObject("Rows")->dynamicCall("Count").toInt();
+    for(int i=2; i<rows+1; i++)
+    {
+        QAxObject *headcol = mytable->querySubObject("Cell(int,int)", i, 0);
+        if (headcol == NULL) continue;
+        QString yearStr = headcol->querySubObject("Range")->property("Text"). toString();
+        if (ui->yearComboBox->currentText() == yearStr)	//以年份为关键字检索
+        {
+            QAxObject *infocol = mytable->querySubObject("Cell(int,int)", i, 2);
+            QString totalStr = infocol->querySubObject("Range")->property ("Text"). toString();													//读取当年高考人数
+            ui->totalLineEdit->setText(totalStr);
+            infocol = mytable->querySubObject("Cell(int,int)", i, 3);
+            QString admitStr = infocol->querySubObject("Range")->property ("Text"). toString();													//读取录取人数
+            ui->admitLineEdit->setText(admitStr);
+            infocol = mytable->querySubObject("Cell(int,int)", i, 4);
+            QString rateStr = infocol->querySubObject("Range")->property ("Text"). toString();													//读取录取率
+            ui->rateLineEdit->setText(rateStr);
+            break;
+        }
+    }
+}

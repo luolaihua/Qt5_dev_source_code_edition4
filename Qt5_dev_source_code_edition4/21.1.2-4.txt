@@ -1,0 +1,21 @@
+void MainWindow::imgProc(int ker)
+{
+    Mat imgSrc = myImg;
+    //必须分别定义imgDst1～imgDst4来运行算法（不能公用同一个变量），否则内存会崩溃
+    Mat imgDst1 = imgSrc.clone();
+    for (int i = 1; i < ker; i = i + 2) blur(imgSrc, imgDst1, Size(i, i), Point(-1, -1));           												//均值滤波
+    myBlurQImg = QImage((const unsigned char*)(imgDst1.data), imgDst1.cols, imgDst1.rows, QImage::Format_RGB888);
+    Mat imgDst2 = imgSrc.clone();
+    for(int i=1; i<ker; i=i+2) GaussianBlur(imgSrc, imgDst2, Size(i,i), 0, 0);            															//高斯滤波
+    myGaussianQImg = QImage((const unsigned char*)(imgDst2.data), imgDst2.cols, imgDst2.rows, QImage::Format_RGB888);
+    Mat imgDst3 = imgSrc.clone();
+    for(int i=1; i<ker; i=i+2) medianBlur(imgSrc,imgDst3,i);                             
+														//中值滤波
+    myMedianQImg = QImage((const unsigned char*)(imgDst3.data), imgDst3.cols, imgDst3.rows, QImage::Format_RGB888);
+    Mat imgDst4 = imgSrc.clone();
+    for(int i=1; i<ker; i=i+2) bilateralFilter(imgSrc, imgDst4, i,i*2, i / 2);          
+														//双边滤波
+    myBilateralQImg = QImage((const unsigned char*)(imgDst4.data), imgDst4.cols, 
+imgDst4.rows, QImage::Format_RGB888);
+    imgShow();
+}

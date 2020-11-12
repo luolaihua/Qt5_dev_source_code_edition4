@@ -1,0 +1,38 @@
+void MainWindow::addSubWndListMenu()
+{
+    //首先清空原“窗口”主菜单，然后再添加各菜单项
+    ui->menu_W->clear();
+    ui->menu_W->addAction(ui->closeAction);
+    ui->menu_W->addAction(ui->closeAllAction);
+    ui->menu_W->addSeparator();
+    ui->menu_W->addAction(ui->tileAction);
+    ui->menu_W->addAction(ui->cascadeAction);
+    ui->menu_W->addSeparator();
+    ui->menu_W->addAction(ui->nextAction);
+    ui->menu_W->addAction(ui->previousAction);
+    QList<QMdiSubWindow *> wnds = ui->mdiArea->subWindowList();
+    if (!wnds.isEmpty()) ui->menu_W->addSeparator();
+											//如果有活动子窗口，则显示分隔条
+    //遍历各子窗口，显示所有当前已打开的文档子窗口项
+    for(int i=0; i<wnds.size(); ++i)
+    {
+        MyChildWnd *childwnd=qobject_cast<MyChildWnd *>(wnds.at(i)->widget());
+        QString menuitem_text;
+        if(i<9)
+        {
+            menuitem_text=tr("&%1 %2").arg(i+1).arg(childwnd->getCurDocName());
+        } else {
+            menuitem_text=tr("%1 %2").arg(i+1).arg(childwnd->getCurDocName());
+        }
+        //添加子窗口菜单项，设置其可选
+        QAction *menuitem_act = ui->menu_W->addAction(menuitem_text);
+        menuitem_act->setCheckable(true);
+        //将当前活动的子窗口设为勾选状态
+        menuitem_act->setChecked(childwnd == activateChildWnd());
+        //关联菜单项的触发信号到信号映射器的map()槽，该槽会发送mapped()信号
+        connect(menuitem_act, SIGNAL(triggered()), myWndMapper, SLOT(map()));
+        //将菜单项与相应的窗口部件进行映射，在发送mapped()信号时就会以这个窗口部件为参数
+        myWndMapper->setMapping(menuitem_act, wnds.at(i));
+    }
+    formatEnabled();							//使“字体”菜单下的功能可用
+}

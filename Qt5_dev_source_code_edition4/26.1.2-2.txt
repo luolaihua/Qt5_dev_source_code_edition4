@@ -1,0 +1,26 @@
+import QtQuick 2.7
+import QtQuick.Controls 2.0			//导入Qt Quick Controls 2.0库
+import QtQuick.Layouts 1.0			//导入Qt Quick布局库
+
+Item {								//QML通用的根元素
+	/* 定义属性别名，为在其他.qml文件中引用这两个控件 */
+    property alias textField1: textField1
+    property alias button1: button1
+
+    RowLayout {						//水平布局
+        anchors.horizontalCenter: parent.horizontalCenter
+									//在页面上居中
+        anchors.topMargin: 20		//距顶部20像素
+        anchors.top: parent.top		//顶端对齐
+
+        TextField {					//文本框控件
+            id: textField1
+            placeholderText: qsTr("Text Field")
+        }
+
+        Button {						//按钮控件
+            id: button1
+            text: qsTr("Press Me")
+        }
+    }
+}

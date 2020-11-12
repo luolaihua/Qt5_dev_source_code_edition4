@@ -1,0 +1,31 @@
+QGroupBox *Dialog::createInputWidgets()
+{
+    	QGroupBox *box = new QGroupBox(tr("添加产品"));
+    	QLabel *factoryLabel = new QLabel(tr("制造商:"));
+    	QLabel *addressLabel = new QLabel(tr("厂址:"));		
+    	QLabel *carLabel = new QLabel(tr("品牌:"));
+    	QLabel *yearLabel = new QLabel(tr("上市时间:"));
+    	QLabel *attribLabel = new QLabel(tr("产品属性 (由分号;隔开):"));
+    	factoryEditor = new QLineEdit;
+    	carEditor = new QLineEdit;
+	addressEditor = new QLineEdit;
+    	yearEditor = new QSpinBox;
+    	yearEditor->setMinimum(1900);
+    	yearEditor->setMaximum(QDate::currentDate().year());
+    	yearEditor->setValue(yearEditor->maximum());
+    	yearEditor->setReadOnly(false);
+    	attribEditor = new QLineEdit;
+    	QGridLayout *layout = new QGridLayout;
+    	layout->addWidget(factoryLabel, 0, 0);
+    	layout->addWidget(factoryEditor, 0, 1);
+   	layout->addWidget(addressLabel, 1, 0);
+    	layout->addWidget(addressEditor, 1, 1);
+    	layout->addWidget(carLabel, 2, 0);
+    	layout->addWidget(carEditor, 2, 1);
+    	layout->addWidget(yearLabel, 3, 0);
+    	layout->addWidget(yearEditor, 3, 1);
+    	layout->addWidget(attribLabel, 4, 0, 1, 2);
+    	layout->addWidget(attribEditor, 5, 0, 1, 2);
+    	box->setLayout(layout);
+    	return box;
+}

@@ -1,0 +1,25 @@
+void MainWindow::initMainWindow()
+{
+    ui->stackedWidget->setCurrentIndex(1);		//置于商品管理主页
+    ui->toolBox->setCurrentIndex(0);			//“新品入库”页显示在前面
+    QSqlQueryModel *categoryModel = new QSqlQueryModel(this);
+												//商品类别模型数据
+    categoryModel->setQuery("select Name from category");
+    ui->newCategoryComboBox->setModel(categoryModel);
+												//商品类别列表加载（“新品入库”页）
+    commodity_model = new QSqlTableModel(this);	//商品信息视图
+    commodity_model->setTable("commodity_inf");
+    commodity_model->select();
+    ui->commodityTableView->setModel(commodity_model);
+										//库存商品记录数据网格信息加载（“新品入库”页）
+    ui->preCategoryComboBox->setModel(categoryModel);
+												//商品类别列表加载（“预售订单”页）
+    loadPreCommodity();							//在“预售订单”页加载商品信息
+    myMemberID = "b02020622";
+    myOrdered = false;							//当前尚未有人购物
+    myOrderID = 0;
+	myPaySum = 0;								//当前订单累计需要付款总金额
+    QListWidgetItem *title = new QListWidgetItem;
+    title->setText(QString("当 前 订 单 【 编号 %1 】").arg(myOrderID));
+    title->setTextAlignment(Qt::AlignCenter);
+}

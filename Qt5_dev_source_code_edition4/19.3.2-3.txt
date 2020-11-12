@@ -1,0 +1,26 @@
+void MainWindow::sendChatMsg(ChatMsgType msgType, QString rmtName)
+{
+    QByteArray qba;
+    QDataStream write(&qba, QIODevice::WriteOnly);
+    QString locHostIp = getLocHostIp();
+    QString locChatMsg = getLocChatMsg();
+    write << msgType << myname;								//(a)
+    switch (msgType)
+    {
+    case ChatMsg:											//(b)
+        write << locHostIp << locChatMsg;
+        break;
+    case OnLine:												//(c)
+        write << locHostIp;
+        break;
+    case OffLine:											//(d)
+        break;
+    case SfileName:											//(e)
+        write << locHostIp << rmtName << myFileName;
+        break;
+    case RefFile:
+        write << locHostIp << rmtName;
+        break;
+    }
+    myUdpSocket->writeDatagram(qba, qba.length(), QHostAddress::Broadcast, myUdpPort);														//(f)
+}

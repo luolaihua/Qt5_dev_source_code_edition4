@@ -1,0 +1,61 @@
+import QtQuick 2.7
+import QtQuick.Controls 2.0						//导入Qt Quick Controls 2.0库
+import QtQuick.Layouts 1.0						//导入Qt Quick布局库
+
+Item {											//QML通用的根元素
+	/* 定义属性别名，为在Page1.qml中引用各控件 */
+    property alias topic: topic
+    property alias author: author
+
+    SwipeView {									//(a)
+        id: view
+        currentIndex: pageIndicator.currentIndex
+        anchors.fill: parent
+
+        Page {									//第一个页面
+            title: qsTr("蒙娜丽莎")				//该页的标题文本
+            Image {								//该页显示的图像元素
+                source: "images/蒙娜丽莎.jpg"		//图像路径
+            }
+        }
+        Page {									//第二个页面
+            title: qsTr("大卫")
+            Image {
+                source: "images/大卫.jpg"
+            }
+        }
+        Page {									//第三个页面
+            title: qsTr("西斯廷圣母")
+            Image {
+                source: "images/圣母.jpg"
+            }
+        }
+    }
+
+    PageIndicator {								//(b)
+        id: pageIndicator
+        interactive: true						//(c)
+        count: view.count
+        currentIndex: view.currentIndex
+
+        anchors.bottom: parent.bottom			//位于页面底部
+        anchors.horizontalCenter: parent.horizontalCenter
+												//位于底部的中央
+    }
+
+    Label {										//标签显示作品名
+        id: topic
+        text: view.currentItem.title				//作品名为当前页的标题
+        font.family: "微软雅黑"					//字体
+        font.bold: true							//加黑
+        font.pixelSize: 25						//设置字号
+        anchors.right: parent.right				//位于页面右侧
+        anchors.rightMargin: 250					//右边距为250像素
+        TextArea {								//文本区显示作者、创作年代
+            id: author
+            font.family: "微软雅黑"
+            font.pixelSize: 18
+            anchors.top: parent.bottom			//位于标题下方
+        }
+    }
+}

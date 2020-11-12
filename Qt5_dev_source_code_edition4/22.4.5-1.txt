@@ -1,0 +1,24 @@
+void MainWindow::onTableSelectChange(int row)
+{
+    int r = 1;											//默认显示第一行
+    if(row !=0)r=ui->basicTableView->currentIndex().row();	//获取当前行索引
+    QModelIndex index;
+    index = model->index(r, 1);                           	//姓名
+    ui->nameLabel->setText(model->data(index).toString());
+    index = model->index(r, 2);                           	//性别
+    QString sex = model->data(index).toString();
+    (sex.compare("男")==0)?ui->maleRadioButton->setChecked(true): ui-> 
+femaleRadioButton->setChecked(true);
+    index = model->index(r, 4);                           	//出生日期
+    QDate date;
+    int now = date.currentDate().year();
+    int bir = model->data(index).toDate().year();
+    ui->ageSpinBox->setValue(now - bir);				//计算年龄
+    index = model->index(r, 3);                           	//民族
+    QString ethnic = model->data(index).toString();
+    ui->ethniComboBox->setCurrentText(ethnic);
+    index = model->index(r, 0);                           	//医保卡编号
+    QString ssn = model->data(index).toString();
+    ui->ssnLineEdit->setText(ssn);
+    showUserPhoto();                                  		//照片
+}

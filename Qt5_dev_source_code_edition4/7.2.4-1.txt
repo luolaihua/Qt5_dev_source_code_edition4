@@ -1,0 +1,30 @@
+#include "mainwidget.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QSlider>
+#include <QGroupBox>
+MainWidget::MainWidget(QWidget *parent)
+    : QWidget(parent)
+{
+    angle = 0;
+    scaleValue = 5;
+    shearValue = 5;
+    translateValue = 50;
+    QGraphicsScene *scene = new QGraphicsScene;
+    //限定新建QGraphicsScene对象的显示区域
+    scene->setSceneRect(-200,-200,400,400);
+    view = new QGraphicsView;			//新建一个视图对象
+    view->setScene(scene);				//将视图对象与场景相连
+    view->setMinimumSize(400,400);		//设置视图的最小尺寸为（400,400）
+    ctrlFrame = new QFrame;
+    createControlFrame();				//新建主窗体右侧的控制面板区
+    //主窗口布局
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->setMargin(10);
+    mainLayout->setSpacing(20);
+    mainLayout->addWidget(view);
+    mainLayout->addWidget(ctrlFrame);
+    setLayout(mainLayout);
+    setWindowTitle(tr("Graphics Item Transformation"));
+//设置主窗体的标题
+}

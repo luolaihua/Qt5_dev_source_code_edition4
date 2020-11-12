@@ -1,0 +1,27 @@
+Action {										//¡°¼ôÇÐ¡±Action
+    id: cutAction
+    text: "¼ôÇÐ"
+    shortcut: "Ctrl+X"
+    iconSource: "images/editcut.png"
+    iconName: "edit-cut"
+    enabled: false
+    onTriggered: textArea.cut()
+}
+Action {										//¡°¸´ÖÆ¡±Action
+    id: copyAction
+    text: "¸´ÖÆ"
+    shortcut: "Ctrl+C"
+    iconSource: "images/editcopy.png"
+    iconName: "edit-copy"
+    enabled: false
+    onTriggered: textArea.copy()
+}
+Action {										//¡°Õ³Ìù¡±Action
+    id: pasteAction
+    text: "Õ³Ìù"
+    shortcut: "Ctrl+V"
+    iconSource: "images/editpaste.png"
+    iconName: "edit-paste"
+    enabled: false
+    onTriggered: textArea.paste()
+}

@@ -1,0 +1,26 @@
+void MainWindow::docOpen()
+{
+    QString docName = QFileDialog::getOpenFileName(this, tr("打开"), QString(),
+ tr("HTML 文档 (*.htm *.html);;所有文件 (*.*)"));
+    if (!docName.isEmpty())
+    {
+        QMdiSubWindow *exist = findChildWnd(docName);
+        if (exist)
+        {
+            ui->mdiArea->setActiveSubWindow(exist);
+            return;
+        }
+        MyChildWnd *childwnd = new MyChildWnd;
+        ui->mdiArea->addSubWindow(childwnd);
+        connect(childwnd, SIGNAL(copyAvailable(bool)), ui->cutAction, SLOT(setEnabled(bool)));
+        connect(childwnd, SIGNAL(copyAvailable(bool)), ui->copyAction,SLOT(setEnabled(bool)));
+        if (childwnd->loadDoc(docName))
+        {
+            statusBar()->showMessage(tr("文档已打开"), 2000);
+            childwnd->show();
+            formatEnabled();				//使“字体”菜单下的功能可用
+        } else {
+            childwnd->close();
+        }
+    }
+}

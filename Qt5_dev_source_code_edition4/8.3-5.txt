@@ -1,0 +1,18 @@
+void MainWindow::setupView()
+{
+    splitter = new QSplitter;
+    splitter->setOrientation(Qt::Vertical);
+    histogram = new HistogramView(splitter);
+			//新建一个HistogramView对象
+    histogram->setModel(model);			//为HistogramView对象设置相同的Model
+    table = new QTableView;	
+    table->setModel(model);
+    QItemSelectionModel *selectionModel=new QItemSelectionModel (model);
+    table->setSelectionModel(selectionModel);
+    histogram->setSelectionModel(selectionModel);				//(a)
+    splitter->addWidget(table);
+    splitter->addWidget(histogram);
+    setCentralWidget(splitter);
+connect(selectionModel,SIGNAL(selectionChanged(QItemSelection,QItemSelection)),table,SLOT(selectionChanged(QItemSelection,QItemSelection)));
+connect(selectionModel,SIGNAL(selectionChanged(QItemSelection,QItemSelection)),histogram,SLOT(selectionChanged(QItemSelection,QItemSelection)));															//(b)
+}

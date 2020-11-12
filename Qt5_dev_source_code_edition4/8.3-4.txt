@@ -1,0 +1,36 @@
+QModelIndex HistogramView::indexAt(const QPoint &point)const
+{
+    QPoint newPoint(point.x(),point.y());
+    QRegion region;
+    //男 列
+    foreach(region,MRegionList)							//(a)
+    {
+        if(region.contains(newPoint))
+        {
+            int row = MRegionList.indexOf(region);
+            QModelIndex index = model()->index(row,1,rootIndex());
+            return index;
+        }
+    }
+    //女 列
+    foreach(region,FRegionList)							//(b)
+    {
+        if(region.contains(newPoint))
+        {
+            int row = FRegionList.indexOf(region);
+            QModelIndex index = model()->index(row,2,rootIndex());
+            return index;
+        }
+    }
+    //合计 列
+    foreach(region,SRegionList)							//(c)
+    {
+        if(region.contains(newPoint))
+        {
+            int row = SRegionList.indexOf(region);
+            QModelIndex index = model()->index(row,3,rootIndex());
+            return index;
+        }
+    }
+    return QModelIndex();
+}

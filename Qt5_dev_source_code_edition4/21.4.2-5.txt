@@ -1,0 +1,33 @@
+void MainWindow::imgProc()
+{
+    CascadeClassifier face_detector;				//定义人脸识别分类器类
+    CascadeClassifier eyes_detector;				//定义人眼识别分类器类
+    string fDetectorPath = "haarcascade_frontalface_alt.xml";
+    face_detector.load(fDetectorPath);
+    string eDetectorPath = "haarcascade_eye_tree_eyeglasses.xml";
+    eyes_detector.load(eDetectorPath);				//(a)
+    vector<Rect> faces;
+    Mat imgSrc = myImg;
+    Mat imgGray;
+    cvtColor(imgSrc, imgGray, CV_RGB2GRAY);
+    equalizeHist(imgGray, imgGray);
+    face_detector.detectMultiScale(imgGray, faces, 1.1, 2, 0 | CV_HAAR_ SCALE_ IMAGE, Size(30, 30));									//多尺寸检测人脸
+    for (int i = 0; i < faces.size(); i++)
+    {
+        Point center(faces[i].x + faces[i].width * 0.5, faces[i].y + faces[i]. height * 0.5);
+        ellipse(imgSrc, center, Size(faces[i].width * 0.5, faces[i].height * 0.5), 
+0, 0, 360, Scalar(255, 0, 255), 4, 8, 0);
+        Mat faceROI = imgGray(faces[i]);
+        vector<Rect> eyes;
+        eyes_detector.detectMultiScale(faceROI, eyes, 1.1, 2, 0 | CV_HAAR_SCALE_ IMAGE, Size(30, 30));									//再在每张人脸上检测双眼
+        for (int j = 0; j < eyes.size(); j++)
+        {
+            Point center(faces[i].x + eyes[j].x + eyes[j].width * 0.5, faces[i].y + eyes[j].y + eyes[j].height * 0.5);
+            int radius = cvRound((eyes[j].width + eyes[i].height) * 0.25);
+            circle(imgSrc, center, radius, Scalar(255, 0, 0), 4, 8, 0);
+        }
+    }
+    Mat imgDst = imgSrc;
+    myQImg = QImage((const unsigned char*)(imgDst.data), imgDst.cols, imgDst. rows, QImage::Format_RGB888);
+    imgShow();
+}

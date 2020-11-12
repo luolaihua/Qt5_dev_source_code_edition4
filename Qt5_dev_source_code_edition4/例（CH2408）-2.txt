@@ -1,0 +1,36 @@
+import QtQuick 2.7
+import QtQuick.Window 2.2
+import QtQuick.Extras 1.4						//(a)
+import QtQuick.Controls 1.4
+
+Window {
+    visible: true
+    width: 640
+    height: 480
+    title: qsTr("饼状菜单")
+
+    MainForm {
+        anchors.fill: parent
+        mouseArea.onClicked: {
+            pieMenu.popup(mouseArea.mouseX, mouseArea.mouseY)
+												//(b)
+        }
+    }
+
+    PieMenu {											//(c)
+        id: pieMenu
+        triggerMode: TriggerMode.TriggerOnRelease		//(d)
+        MenuItem {										//菜单项1
+            text: "动作1"
+            onTriggered: print("动作1")
+        }
+        MenuItem {										//菜单项2
+            text: "动作2"
+            onTriggered: print("动作2")
+        }
+        MenuItem {										//菜单项3
+            text: "动作3"
+            onTriggered: print("动作3")
+        }
+    }
+}

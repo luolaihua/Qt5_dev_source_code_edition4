@@ -1,0 +1,35 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+#include <QMainWindow>
+#include <QMessageBox>
+#include <QAxObject>
+#include <QAxWidget>
+namespace Ui {
+class MainWindow;
+}
+typedef struct record
+{
+    QString year;								//年份
+    QString total;								//高考人数
+    QString admit;								//录取人数
+    QString rate;								//录取率
+} Record;
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+private slots:
+    void on_writeTablePushButton_clicked();		//“写入”按钮单击事件槽
+    void view_Word(QString& filename);			//在Qt界面预览Word表格
+private:
+    Ui::MainWindow *ui;
+    QAxObject *myword;							//Word应用程序指针
+    QAxObject *mydocs;							//文档集指针
+    QAxObject *document;						//文档指针
+    QAxObject *mytable;							//Word中表格指针
+    QList<Record> myrecord;						//表格记录列表
+    QAxWidget *mywidget;						//Qt界面上的Word可视化部件
+};
+#endif // MAINWINDOW_H

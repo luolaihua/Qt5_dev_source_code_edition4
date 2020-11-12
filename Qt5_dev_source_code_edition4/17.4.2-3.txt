@@ -1,0 +1,96 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    initMainWindow();				//执行初始化方法
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::initMainWindow()
+{
+	//用初始化方法对系统主窗体进行初始化
+	...
+}
+
+void MainWindow::onTableSelectChange(int row)
+{
+	//当用户变更选择商品信息数据网格中的条目时执行对应的表单更新
+	...
+}
+
+void MainWindow::showCommodityPhoto()
+{
+	//显示商品样照
+	...
+}
+
+void MainWindow::loadPreCommodity()
+{
+	//“预售订单”页加载显示商品信息
+	...
+}
+
+void MainWindow::onPreNameComboBoxChange()
+{
+	//在“预售订单”页改选商品名称时联动显示该商品的各信息项
+	...
+}
+
+void MainWindow::on_commodityTableView_clicked(const QModelIndex &index)
+{
+    onTableSelectChange(1);			//在选择数据网格中不同的商品条目时执行
+}
+
+void MainWindow::on_preCategoryComboBox_currentIndexChanged(int index)
+{
+    loadPreCommodity();				//下拉列表改变类别时加载对应类下的商品
+}
+
+void MainWindow::on_preNameComboBox_currentIndexChanged(int index)
+{
+    onPreNameComboBoxChange();		//选择不同商品名联动显示该商品各信息项
+}
+
+void MainWindow::on_preCountSpinBox_valueChanged(int arg1)
+{
+	//修改出售商品数量时对应计算总价
+    ui->preTotalLabel->setText(QString::number(ui->preOutputPriceLabel-> text().toFloat() * arg1));
+}
+
+void MainWindow::on_preSellPushButton_clicked()
+{
+	//“出售”按钮单击事件过程代码
+	...
+}
+
+void MainWindow::on_prePlaceOrderPushButton_clicked()
+{
+	//“下单”按钮单击事件过程代码
+	...
+}
+
+void MainWindow::on_newUploadPushButton_clicked()
+{
+	//“上传...”按钮单击事件过程代码
+	...
+}
+
+void MainWindow::on_newPutinStorePushButton_clicked()
+{
+	//“入库”按钮单击事件过程代码
+	...
+}
+
+void MainWindow::on_newClearancePushButton_clicked()
+{
+	//“清仓”按钮单击事件过程代码
+	...
+}

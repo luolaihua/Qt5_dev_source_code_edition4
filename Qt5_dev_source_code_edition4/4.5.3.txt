@@ -1,0 +1,22 @@
+void MsgBoxDlg::showWarningMsg()
+{
+    label->setText(tr("Warning Message Box"));
+    switch(QMessageBox::warning(this,tr("Warning消息框"),
+         tr("您修改的内容还未保存，是否要保存对文档的修改？"),
+         QMessageBox::Save|QMessageBox::Discard|QMessageBox::Cancel,
+         QMessageBox::Save))
+    {
+    case QMessageBox::Save:
+        label->setText(tr("Warning button/Save"));
+        break;
+    case QMessageBox::Discard:
+        label->setText(tr("Warning button/Discard"));
+        break;
+    case QMessageBox::Cancel:
+        label->setText(tr("Warning button/Cancel"));
+        break;
+    default:
+        break;
+    }
+    return;
+}

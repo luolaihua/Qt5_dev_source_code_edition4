@@ -1,0 +1,81 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+}
+MainWindow::~MainWindow()
+{
+    delete ui;    
+}
+void MainWindow::on_openPushButton_clicked()
+{
+    QFileDialog fdialog;							//打开文件对话框
+    fdialog.setFileMode(QFileDialog::ExistingFile);
+    fdialog.setViewMode(QFileDialog::Detail);
+    fdialog.setOption(QFileDialog::ReadOnly, true);
+    fdialog.setDirectory(QString("d:/Qt/office"));
+    fdialog.setNameFilter(QString("所有文件(*.*);;Microsoft Excel 工作表(*.xlsx);; Microsoft Excel 97-2003 工作表(*.xls)"));				//(a)
+    if (fdialog.exec())
+    {
+        QstringList files = fdialog.selectedFiles();
+        for (auto fname:files)
+        {
+            if (fname.endsWith(".xlsx")||fname.endsWith(".xls"))//本例兼容两种Excel
+            {
+                this->view_Excel(fname);				//在界面上显示Excel表格
+            } else {
+                QmessageBox::information(this,tr("提示"),tr("你选择的不是Excel文件！"));
+            }
+        }
+    }
+}
+
+void MainWindow::view_Excel(Qstring& filename)
+{
+    mywidget = new QAxWidget("Excel.Application", ui->viewLabel);	//(b)
+    mywidget->dynamicCall("SetVisible(bool Visible) ", "false");
+    mywidget->setProperty("DisplayAlerts", false);					//(c)
+    mywidget->setGeometry(ui->viewLabel->geometry().x() - 130, ui->viewLabel-> geometry().y() - 50, 450, 200);							//设置显示尺寸
+    mywidget->setControl(filename);
+    mywidget->show();								//显示Excel表格
+}
+
+void MainWindow::closeExcel()						//(d)
+{
+    if (this->mywidget)
+    {
+        mywidget->close();
+        mywidget->clear();
+        delete mywidget;
+        mywidget = nullptr;
+    }
+}
+
+void MainWindow::on_countPushButton_clicked()	//统计功能实现
+{
+    myexcel = new QAxObject("Excel.Application");
+    myworks = myexcel->querySubObject("WorkBooks");
+    myworks->dynamicCall("Open(const Qstring&)", "d:\\Qt\\office\\Gaokao. xlsx");
+    workbook = myexcel->querySubObject("ActiveWorkBook");
+    mysheets = workbook->querySubObject("Sheets");
+    QAxObject *sheet = mysheets->querySubObject("Item(int) ", 1);
+    QAxObject *cell = sheet->querySubObject("Range(Qvariant, Qvariant) ", "C7");
+												//定位至第一张表的C7单元格
+    cell->dynamicCall("SetValue(const Qvariant&)", Qvariant("=sum(C2:C6) "));
+												//调用Excel内置的公式计算功能
+    cell = sheet->querySubObject("Range(Qvariant, Qvariant) ", "D7");
+    cell->dynamicCall("SetValue(const Qvariant&)", Qvariant("=average(D2: D6) "));
+												//单元格D7存放平均录取率值
+    workbook->dynamicCall("SaveAs(const Qstring&)","d:\\Qt\\office\\Gaokao.xlsx");
+    workbook->dynamicCall("Close()");
+    myexcel->dynamicCall("Quit()");
+    delete myexcel;
+    myexcel = nullptr;
+    QmessageBox::information(this, tr("完毕"), tr("统计完成！"));
+    closeExcel();
+    Qstring fname = "d:\\Qt\\office\\Gaokao.xlsx";
+    view_Excel(fname);							//统计完及时浏览刷新界面显示
+}

@@ -1,0 +1,36 @@
+void Palette::createCtrlFrame()
+{
+    	ctrlFrame =new QFrame;                   	//颜色选择面板
+    	windowLabel =new QLabel(tr("QPalette::Window: "));
+    	windowComboBox =new QComboBox;			//创建一个QComboBox对象
+    	fillColorList(windowComboBox);			//(a)
+	connect(windowComboBox,SIGNAL(activated(int)),this,SLOT(ShowWindow()));												//(b)
+    	windowTextLabel =new QLabel(tr("QPalette::WindowText: "));
+    	windowTextComboBox =new QComboBox;
+    	fillColorList(windowTextComboBox);
+	connect(windowTextComboBox,SIGNAL(activated(int)),this,SLOT(ShowWindow Text()));
+    	buttonLabel =new QLabel(tr("QPalette::Button: "));
+    	buttonComboBox =new QComboBox;
+    	fillColorList(buttonComboBox);
+	connect(buttonComboBox,SIGNAL(activated(int)),this,SLOT(ShowButton()));
+    	buttonTextLabel =new QLabel(tr("QPalette::ButtonText: "));
+    	buttonTextComboBox =new QComboBox;
+    	fillColorList(buttonTextComboBox);
+	connect(buttonTextComboBox,SIGNAL(activated(int)),this,SLOT(ShowButton Text()));
+    	baseLabel =new QLabel(tr("QPalette::Base: "));
+    	baseComboBox =new QComboBox;
+    	fillColorList(baseComboBox);
+    	connect(baseComboBox,SIGNAL(activated(int)),this,SLOT(ShowBase()));
+    	QGridLayout *mainLayout=new QGridLayout(ctrlFrame);
+    	mainLayout->setSpacing(20);
+    	mainLayout->addWidget(windowLabel,0,0);
+    	mainLayout->addWidget(windowComboBox,0,1);
+    	mainLayout->addWidget(windowTextLabel,1,0);
+    	mainLayout->addWidget(windowTextComboBox,1,1);
+    	mainLayout->addWidget(buttonLabel,2,0);
+    	mainLayout->addWidget(buttonComboBox,2,1);
+    	mainLayout->addWidget(buttonTextLabel,3,0);
+    	mainLayout->addWidget(buttonTextComboBox,3,1);
+    	mainLayout->addWidget(baseLabel,4,0);
+    	mainLayout->addWidget(baseComboBox,4,1);
+1}

@@ -1,0 +1,38 @@
+/* import部分 */
+import QtQuick 2.7
+import QtQuick.Controls 2.0			//导入Qt Quick Controls 2.0库
+import QtQuick.Layouts 1.0
+/* 对象声明 */
+ApplicationWindow {					//主应用窗口：ApplicationWindow
+    visible: true
+    width: 640
+    height: 480
+    title: qsTr("Hello World")
+
+    SwipeView {						//(a)
+        id: swipeView
+        anchors.fill: parent
+        currentIndex: tabBar.currentIndex
+
+        Page1 {						//(b)
+        }
+
+        Page {						//(c)
+            Label {
+                text: qsTr("Second page")
+                anchors.centerIn: parent
+            }
+        }
+    }
+
+    footer: TabBar {					//(d)
+        id: tabBar
+        currentIndex: swipeView.currentIndex
+        TabButton {
+            text: qsTr("First")
+        }
+        TabButton {
+            text: qsTr("Second")
+        }
+    }
+}

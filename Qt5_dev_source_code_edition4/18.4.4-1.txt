@@ -1,0 +1,54 @@
+void MyChildWnd::setParaStyle(int pstyle)
+{
+    QTextCursor tcursor = this->textCursor();
+    if (pstyle != 0)
+    {
+        QTextListFormat::Style sname = QTextListFormat::ListDisc;
+        switch (pstyle)
+        {
+            default:
+            case 1:
+                sname = QTextListFormat::ListDisc;		//实心圆标号
+                break;
+            case 2:
+                sname = QTextListFormat::ListCircle;		//空心圆标号
+                break;
+            case 3:
+                sname = QTextListFormat::ListSquare;		//方形标号
+                break;
+            case 4:
+                sname = QTextListFormat::ListDecimal;		//十进制编号
+                break;
+            case 5:
+                sname = QTextListFormat::ListLowerAlpha;	//小写字母编号
+                break;
+            case 6:
+                sname = QTextListFormat::ListUpperAlpha;	//大写字母编号
+                break;
+            case 7:
+                sname = QTextListFormat::ListLowerRoman;	//小写罗马数字编号
+                break;
+            case 8:
+                sname = QTextListFormat::ListUpperRoman;	//大写罗马数字编号
+                break;
+        }
+        tcursor.beginEditBlock();
+        QTextBlockFormat tBlockFmt = tcursor.blockFormat();
+        QTextListFormat tListFmt;
+        if(tcursor.currentList())
+        {
+            tListFmt = tcursor.currentList()->format();
+        } else {
+            tListFmt.setIndent(tBlockFmt.indent() + 1);
+            tBlockFmt.setIndent(0);
+            tcursor.setBlockFormat(tBlockFmt);
+        }
+        tListFmt.setStyle(sname);
+        tcursor.createList(tListFmt);
+        tcursor.endEditBlock();
+    } else {
+        QTextBlockFormat tbfmt;
+        tbfmt.setObjectIndex(-1);
+        tcursor.mergeBlockFormat(tbfmt);					//合并格式
+    }
+}

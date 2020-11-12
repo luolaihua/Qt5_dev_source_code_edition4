@@ -1,0 +1,24 @@
+void MainWindow::docUndo()
+{
+    if(activateChildWnd()) activateChildWnd()->undo();		//撤销
+}
+
+void MainWindow::docRedo()
+{
+    if(activateChildWnd()) activateChildWnd()->redo();		//重做
+}
+
+void MainWindow::docCut()
+{
+    if(activateChildWnd()) activateChildWnd()->cut();		//剪切
+}
+
+void MainWindow::docCopy()
+{
+    if(activateChildWnd()) activateChildWnd()->copy();		//复制
+}
+
+void MainWindow::docPaste()
+{
+    if(activateChildWnd()) activateChildWnd()->paste();		//粘贴
+}

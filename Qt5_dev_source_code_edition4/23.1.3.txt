@@ -1,0 +1,27 @@
+/* import部分 */
+import QtQuick 2.7							//导入Qt Quick 2.7库
+/* 对象声明 */
+Rectangle {									//根对象：Rectangle
+    property alias mouseArea: mouseArea		//属性别名
+    property alias textEdit: textEdit
+    width: 360								//属性（宽度）
+    height: 360								//属性（高度）
+    MouseArea {								//子对象1：MouseArea
+        id: mouseArea						//对象标识符
+        anchors.fill: parent
+    }
+    TextEdit {								//子对象2：TextEdit
+        id: textEdit
+        text: qsTr("Enter some text...")
+        verticalAlignment: Text.AlignVCenter
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.topMargin: 20
+        Rectangle {							//子对象2的子对象：Rectangle
+            anchors.fill: parent
+            anchors.margins: -10
+            color: "transparent"
+            border.width: 1
+        }
+    }
+}

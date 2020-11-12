@@ -1,0 +1,28 @@
+void MainWindow::refreshMenus()
+{
+    //至少有一个文档子窗口打开的情况
+    bool hasChild = (activateChildWnd() != 0);
+    ui->saveAction->setEnabled(hasChild);
+    ui->saveAsAction->setEnabled(hasChild);
+    ui->printAction->setEnabled(hasChild);
+    ui->printPreviewAction->setEnabled(hasChild);
+    ui->pasteAction->setEnabled(hasChild);
+    ui->closeAction->setEnabled(hasChild);
+    ui->closeAllAction->setEnabled(hasChild);
+    ui->tileAction->setEnabled(hasChild);
+    ui->cascadeAction->setEnabled(hasChild);
+    ui->nextAction->setEnabled(hasChild);
+    ui->previousAction->setEnabled(hasChild);
+    //文档已打开并且其中有内容被选中的情况
+    bool hasSelect = (activateChildWnd() && activateChildWnd()->textCursor().hasSelection());
+    ui->cutAction->setEnabled(hasSelect);
+    ui->copyAction->setEnabled(hasSelect);
+    ui->boldAction->setEnabled(hasSelect);
+    ui->italicAction->setEnabled(hasSelect);
+    ui->underlineAction->setEnabled(hasSelect);
+    ui->leftAlignAction->setEnabled(hasSelect);
+    ui->centerAction->setEnabled(hasSelect);
+    ui->rightAlignAction->setEnabled(hasSelect);
+    ui->justifyAction->setEnabled(hasSelect);
+    ui->colorAction->setEnabled(hasSelect);
+}

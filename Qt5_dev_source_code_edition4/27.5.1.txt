@@ -1,0 +1,46 @@
+Action {										//“放大”Action
+    id: imgZoominAction
+    iconSource: "images/zoomin.png"
+    iconName: "image-zoomin"
+    text: "放大图片"
+    enabled: false
+    onTriggered: {
+        imageArea.scale += 0.1					//每次扩0.1
+        if(imageArea.scale > 3) {				//放大到3倍后还原
+            imageArea.scale = 1
+        }
+    }
+}
+Action {										//“缩小”Action
+    id: imgZoomoutAction
+    iconSource: "images/zoomout.png"
+    iconName: "image-zoomout"
+    text: "缩小图片"
+    enabled: false
+    onTriggered: {
+        imageArea.scale -= 0.1					//每次缩小0.1
+        if(imageArea.scale < 0.1) {				//缩小到1/10后还原
+            imageArea.scale = 1
+        }
+    }
+}
+Action {										//“向左旋转”Action
+    id: imgRotaleftAction
+    iconSource: "images/rotaleft.png"
+    iconName: "image-rotaleft"
+    text: "逆时针旋转"
+    enabled: false
+    onTriggered: {
+        imageArea.rotation -= 45					//每次逆时针转角45°
+    }
+}
+Action {										//“向右旋转”Action
+    id: imgRotarightAction
+    iconSource: "images/rotaright.png"
+    iconName: "image-rotaright"
+    text: "顺时针旋转"
+    enabled: false
+    onTriggered: {
+        imageArea.rotation += 45					//每次顺时针转角45°
+    }
+}

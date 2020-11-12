@@ -1,0 +1,100 @@
+/*“属性值源”矩形，源文件Rect1.qml */
+import QtQuick 2.0
+Rectangle {
+    width: 80
+    height: 80
+    color: "orange"
+    radius: 10
+    Text {
+        anchors.centerIn: parent
+        font.pointSize: 12
+        text: "属性值源"
+    }
+    PropertyAnimation on x {					//(a)
+        from: 50									//起点
+        to: 500									//终点
+        duration: 30000							//运动时间为30秒
+        loops: Animation.Infinite				//无限循环
+        easing.type: Easing.OutBounce			//(b)
+    }
+}
+/*“信号处理”矩形，源文件Rect2.qml */
+import QtQuick 2.0
+Rectangle {
+    id: rect2
+    width: 80
+    height: 80
+    color: "lightgreen"
+    radius: 10
+    Text {
+        anchors.centerIn: parent
+        font.pointSize: 12
+        text: "信号处理"
+    }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: PropertyAnimation {		//(c)
+            target: rect2						//动画应用于标识rect2的矩形（目标对象）
+            property: "y"						//y轴方向的动画
+            from: 30							//起点
+            to: 300							//终点
+            duration: 3000					//运动时间为3秒
+            loops: 3							//运动3个周期
+            easing.type: Easing.Linear		//匀速线性运动
+        }
+    }
+}
+/*“独立元素”矩形，源文件Rect3.qml */
+import QtQuick 2.0
+Rectangle {
+    id: rect3
+    width: 80
+    height: 80
+    color: "aqua"
+    radius: 10
+    Text {
+        anchors.centerIn: parent
+        font.pointSize: 12
+        text: "独立元素"
+    }
+    PropertyAnimation {						//(d)
+        id: animation						//独立动画标识符
+        target: rect3
+        properties: "x,y"					//同时在x、y轴两个方向上运动
+        duration: 1000						//运动时间为1秒
+        easing.type: Easing.InOutBack		//运动到半程增加过冲，然后减少
+    }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            animation.from = 20				//起点
+            animation.to = 200				//终点
+            animation.running = true			//开启动画
+        }
+    }
+}
+/*“改变行为”矩形，源文件Rect4.qml */
+import QtQuick 2.0
+Rectangle {
+    width: 80
+    height: 80
+    color: "lightblue"
+    radius: 10
+    Text {
+        anchors.centerIn: parent
+        font.pointSize: 12
+        text: "改变行为"
+    }
+    Behavior on x {								//(e)
+        PropertyAnimation {
+            duration: 1000						//运动时间为1秒
+            easing.type: Easing.InQuart			//加速运动
+        }
+    }
+    Behavior on y {								//应用到y轴方向的运动行为
+        PropertyAnimation {
+            duration: 1000
+            easing.type: Easing.InQuart
+        }
+    }
+}

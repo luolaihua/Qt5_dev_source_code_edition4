@@ -1,0 +1,32 @@
+void ProgressDlg::startProgress()
+{
+    	bool ok;
+    	int num =FileNumLineEdit->text().toInt(&ok);	//(a)
+    	if(comboBox->currentIndex()==0)     			//采用进度条的方式显示进度
+    	{
+    	  	progressBar->setRange(0,num);				//(b)
+       	for(int i=1;i<num+1;i++)
+       	{
+		   progressBar->setValue(i);				//(c)          
+		}
+	}
+	else if(comboBox->currentIndex()==1)	//采用进度对话框显示进度
+	{
+		//创建一个进度对话框
+        	QProgressDialog *progressDialog=new QProgressDialog(this);
+        	QFont font("ZYSong18030",12);
+        	progressDialog->setFont(font);
+        	progressDialog->setWindowModality(Qt::WindowModal);	//(d)
+        	progressDialog->setMinimumDuration(5);					//(e)
+        	progressDialog->setWindowTitle(tr("Please Wait"));		//(f)
+       	progressDialog->setLabelText(tr("Copying..."));		//(g)
+        	progressDialog->setCancelButtonText(tr("Cancel"));		//(h)
+        	progressDialog->setRange(0,num);	//设置进度对话框的步进范围
+        	for(int i=1;i<num+1;i++)
+        	{
+			progressDialog->setValue(i);						//(i)
+			if(progressDialog->wasCanceled())					//(j)
+				return;
+        	}
+    	}
+}
